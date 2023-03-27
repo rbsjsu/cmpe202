@@ -1,0 +1,23 @@
+{
+  "name": "cmpe202",
+  "version": "1.0.0",
+  "description": "Health Membership Management system for cmpe 202 project",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rbsjsu/cmpe202.git"
+  },
+  "author": "Rutvik Borad",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rbsjsu/cmpe202/issues"
+  },
+  "homepage": "https://github.com/rbsjsu/cmpe202#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.0.3"
+  }
+}
