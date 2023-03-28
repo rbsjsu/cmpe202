@@ -4,7 +4,8 @@
   "description": "Health Membership Management system for cmpe 202 project",
   "main": "index.js",
   "scripts": {
-    "test": "npm start"
+    "test": "nodemon index.js",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,7 @@
   "homepage": "https://github.com/rbsjsu/cmpe202#readme",
   "dependencies": {
     "express": "^4.18.2",
-    "mongoose": "^7.0.3"
+    "mongoose": "^7.0.3",
+    "nodemon": "^2.0.22"
   }
 }
