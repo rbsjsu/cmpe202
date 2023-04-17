@@ -7,6 +7,13 @@ exports.defaultFunction=(req,res)=>{
     res.send({counter});
 }
 
+exports.getAll = async(req,res)=>{
+    var data = await sampleModel.find();
+    // console.log(data);
+    res.json(data);
+    // res.send(200);
+}
+
 exports.addData = async(req,res)=>{
 
     console.log("***************");
@@ -39,3 +46,4 @@ exports.addData = async(req,res)=>{
     res.send({ "data":newEntry});
 
 }
+

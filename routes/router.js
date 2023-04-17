@@ -1,5 +1,6 @@
-var express = require('express');
-var sampleRoute = require("./sample");
+const express = require('express');
+const sampleRoute = require("./sample");
+const membershipRoute = require("./membershipRoute");
 const router = express.Router();
 
 
@@ -10,6 +11,9 @@ router.get("/", (req,res)=>{
 });
 
 router.use("/sample", sampleRoute);
+router.use("/membership/", membershipRoute);
+
+
 
 
 module.exports = router;
