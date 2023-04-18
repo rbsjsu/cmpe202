@@ -1,6 +1,8 @@
 {
     "port": 3000,
     "db" : {
-        "url" : "mongodb+srv://<username>:<password>@sjsucluster.dyiqjwd.mongodb.net/?retryWrites=true&w=majority"
+        "url" : "mongodb+srv://cmpe202:cmpe202@sjsucluster.dyiqjwd.mongodb.net/?retryWrites=true&w=majority",
+        "secret" : "cmpe202"
+
     }
 }

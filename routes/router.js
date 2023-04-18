@@ -1,6 +1,7 @@
 const express = require('express');
 const sampleRoute = require("./sample");
 const membershipRoute = require("./membershipRoute");
+const userRoute = require("./userRoute");
 const router = express.Router();
 
 
@@ -12,6 +13,7 @@ router.get("/", (req,res)=>{
 
 router.use("/sample", sampleRoute);
 router.use("/membership/", membershipRoute);
+router.use("/user/", userRoute);
 
 
 
