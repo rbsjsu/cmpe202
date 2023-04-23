@@ -28,7 +28,7 @@ exports.addMembership = async(req, res)=>{
         res.statusCode =201;
         res.send({membership : newMembership});
     }).catch((err)=>{
-        console.log("Error Occured while saving the document !!!!");
+        console.log("Error Occured while saving the Membership !!!!");
         console.log(err);
         
         res.sendStatus(500);

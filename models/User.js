@@ -27,7 +27,7 @@ const user = new mongoose.Schema({
         type : String,
         default : "cmpe202"
     },
-    creationTime : {
+    creation_time : {
         type : Date, 
         default: Date.now 
     }

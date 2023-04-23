@@ -18,7 +18,7 @@ const membership = new mongoose.Schema({
         type : Number,
         default : 30
     },
-    creationTime : {
+    creation_time : {
         type : Date, 
         default: Date.now 
     }
