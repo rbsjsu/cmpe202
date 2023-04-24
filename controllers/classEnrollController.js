@@ -1,41 +1,53 @@
 var counter = 0;
 const classModel = require('../models/Class');
+const enrollmentModel = require("../models/Enrollment");
+const classEnrollmentModel = require("../models/ClassEnrollment");
+
 const config_secret = require("../config.json").db.secret;
 const ObjectId = require("mongoose").Types.ObjectId;
 
 exports.defaultFunction=async(req,res)=>{
     console.log("request received, counter = " + counter);
     counter+=1;
-    res.send({class:counter});
+    res.send({classEnrollment:counter});
 }
 
-exports.addClass = async(req, res)=>{
+exports.enrollClass = async(req, res)=>{
     const data = req.body;
-    const newClass = new classModel({
-        instructor_id : data.instructor_id,
-        gym_id : data.gym_id,
-        name : data.name,
-        description : data.description ? data.description : null,
-        start_time : data.start_time,
-        end_time : data.end_time
-    });    
+    let user_id = data.user_id;
+    let class_id = data.class_id;
 
-    let error = await newClass.validateSync();
+    let enrollment = await enrollmentModel.findOne({user_id});
+    let gymClass = await classModel.findById(class_id);
+
+    if( !enrollment ||  enrollment.expiration_time < gymClass.start_time){
+        res.send({error: " you must have and active membership during the Class timing to enroll."});
+    }else{
+        let newClassEnrollment = new classEnrollmentModel({
+            class_id,
+            user_id
+        });
+
+        let error = await newClassEnrollment.validateSync();
    if(error){
     res.statusCode = 400;
     res.json(error.errors);
    }else{
-    newClass.save().then((doc)=>{
+    newClassEnrollment.save().then((doc)=>{
         // console.log("Data Inserted : " + doc);
         res.statusCode =201;
-        res.send({class : newClass});
+        res.send({classEnrollment : newClassEnrollment});
     }).catch((err)=>{
-        console.log("Error Occured while saving the Class !!!!");
+        console.log("Error Occured while saving the Class enrollment!!!!");
         console.log(err);
         
         res.sendStatus(500);
     });
    }  
+
+    }
+
+    
     // here can access new record  via - >  newMembership
     // res.statusCode =201;
     // res.send({membership : newMembership});
@@ -71,17 +83,6 @@ exports.getById = async(req, res)=>{
 
 exports.getAll = async(req,res)=>{
     var data =  await classModel.find({},{"__v": 0});
-    // console.log(data);
-    res.json(data);
-    // res.send(200);
-}
-
-exports.getAllUpcoming = async(req,res)=>{
-    var data =  await classModel.find({
-        start_time :{
-            $gte: new Date()
-        }
-    },{"__v": 0});
     // console.log(data);
     res.json(data);
     // res.send(200);

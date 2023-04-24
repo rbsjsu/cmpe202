@@ -1,5 +1,6 @@
 var counter = 0;
 const membershipModel = require('../models/Membership');
+const enrollmentModel = require("../models/Enrollment");
 const config_secret = require("../config.json").db.secret;
 const ObjectId = require("mongoose").Types.ObjectId;
 
@@ -141,4 +142,23 @@ exports.deleteAll = async(req,res)=>{
         res.send({error : "You don't know the secret to delete all the membership document !!!"});
     }
     
+}
+
+exports.membershipByUserId = async(req, res)=>{
+    if(ObjectId.isValid(req.query.user_id)){
+        // console.log("inside membership by user id with user id - " + req.query.user_id );
+        enrollmentModel.findOne({user_id: req.query.user_id}, {__v : 0}).populate('membership_id')
+        .then((doc)=>{
+        //    console.log("membership found");
+           res.send({membership:doc.membership_id, user_id : doc.user_id});
+        })
+        .catch(error=>{
+           console.log("error Occured fetching membership  with user Id!!!");
+           console.log(error.message);
+           res.sendStatus(500);
+        });
+    }else{
+        res.statusCode=400;
+        res.send({error:"Invalid Membership user Id format"});
+    }
 }
