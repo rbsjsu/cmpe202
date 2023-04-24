@@ -45,7 +45,8 @@ exports.enrollClass = async(req, res)=>{
     });
    }  
 
-    }
+}
+
 
     
     // here can access new record  via - >  newMembership
@@ -56,19 +57,19 @@ exports.enrollClass = async(req, res)=>{
 exports.getById = async(req, res)=>{
     // console.log(req.query.id);
     if(ObjectId.isValid(req.query.id)){
-        classModel.findById( req.query.id, {__v : 0})
+        classEnrollmentModel.findById( req.query.id, {__v : 0})
         .then((doc)=>{
         //    console.log("membership found");
-           res.send({class:doc});
+           res.send({classEnrollment:doc});
         })
         .catch(error=>{
-           console.log("error Occured fetching Class with Id!!!");
+           console.log("error Occured fetching Class enrollment with Id!!!");
            console.log(error.message);
            res.sendStatus(500);
         });
     }else{
         res.statusCode=400;
-        res.send({error:"Invalid Class Object Id format"});
+        res.send({error:"Invalid Class enrollment Object Id format"});
     }
      
     
@@ -82,56 +83,24 @@ exports.getById = async(req, res)=>{
 }
 
 exports.getAll = async(req,res)=>{
-    var data =  await classModel.find({},{"__v": 0});
+    var data =  await classEnrollmentModel.find({},{"__v": 0});
     // console.log(data);
     res.json(data);
     // res.send(200);
 }
 
-exports.update = async(req, res)=>{
-    let data = req.body;
-    if(ObjectId.isValid(data.id)){
-        classModel.findOneAndUpdate({_id:data.id}, {
-            instructor_id : data.instructor_id,
-            gym_id : data.gym_id,
-            name : data.name,
-            description : data.description ? data.description : null,
-            start_time : data.start_time,
-            end_time : data.end_time
-        }, {new : true}).then((doc)=>{
-            //console.log("=========")
-            //console.log(doc);
 
-            if(doc){
-                res.send({class : doc});
-            }else{
-                res.statusCode = 404;
-                res.send({error : "Class not find for the given Id"});
-            }
-            
-        }).catch(error=>{
-            console.log("error Occured while updating the class !!!");
-            console.log(error.message);
-            res.statusCode = 500;
-            res.send({error:error.message});
-        })
-    }else{
-        res.statusCode=400;
-        res.send({error:"Invalid class Object Id formate !!!"});
-    }
-    
-}
 
 exports.deleteById = async(req, res)=>{
      // console.log(req.query.id);
      if(ObjectId.isValid(req.query.id)){
-        classModel.deleteOne( {_id : req.query.id}, {__v : 0})
+        classEnrollmentModel.deleteOne( {_id : req.query.id}, {__v : 0})
         .then((doc)=>{
-            console.log(doc.deletedCount + " - class deleted using ID");
+            console.log(doc.deletedCount + " - class enrollment deleted using ID");
            res.sendStatus(200);
         })
         .catch(error=>{
-           console.log("error Occured deleting class  with Id!!!");
+           console.log("error Occured deleting class enrollment  with Id!!!");
            console.log(error.message);
            res.statusCode = 500;
            res.send({error:error.message});
@@ -145,11 +114,11 @@ exports.deleteById = async(req, res)=>{
 exports.deleteAll = async(req,res)=>{
     if(req.params.secret === config_secret){
         classModel.deleteMany().catch(err=>{
-            console.log("Error occured on deletion of class records !!!");
+            console.log("Error occured on deletion of class enrollment records !!!");
             res.sendStatus(500);
         }).then((docs)=>{
             // console.log(docs.deletedCount);
-            console.log(docs.deletedCount + " classes deleted successfully !!!!");
+            console.log(docs.deletedCount + " classe enrollments deleted successfully !!!!");
             res.sendStatus(200);
         });
     }else{

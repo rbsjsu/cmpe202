@@ -4,13 +4,12 @@ const controller = require("../controllers/classEnrollController");
 
 router.get("/", controller.defaultFunction);
 router.post("/enroll", controller.enrollClass);
-// router.get("/all", controller.getAll);
-// router.get("/get", controller.getById); // query parameter - id
+router.delete("/unenroll", controller.deleteById); // query params - id
 
-// router.post("/create", controller.addClass);
+router.get("/get", controller.getById); // query parameter - id
+router.get("/all", controller.getAll);
 
-// router.delete("/delete-all/:secret", controller.deleteAll);
-// router.delete("/delete", controller.deleteById); // query params - id
 
-// router.put("/update", controller.update) 
+router.delete("/delete-all/:secret", controller.deleteAll);
+
 module.exports= router;
