@@ -6,6 +6,7 @@ const enrollmentRoute = require("./enrollmentRoute");
 const gymRoute = require("./gymRoute");
 const classRoute = require("./classRoute");
 const classEnrollRoute = require("./classEnrollmentRoute");
+const registryRoute = require("./registryRoute");
 
 const router = express.Router();
 
@@ -24,7 +25,7 @@ router.use("/enrollment", enrollmentRoute);
 router.use("/gym", gymRoute);
 router.use("/class", classRoute);
 router.use("/class-enroll", classEnrollRoute);
-
+router.use("/registry", registryRoute);
 
 
 
