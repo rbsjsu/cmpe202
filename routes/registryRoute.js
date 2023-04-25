@@ -8,6 +8,7 @@ router.get("/gym", controller.getRegistryByGymIdAndFlag); // query parameter - g
 router.post("/checkout", controller.checkout);
 router.post("/checkin", controller.checkin);
 
+router.post("/user", controller.checkinActivityByUserId);
 // router.delete("/unenroll", controller.deleteById); // query params - id
 
 // router.get("/get", controller.getById); // query parameter - id

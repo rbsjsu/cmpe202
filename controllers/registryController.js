@@ -55,6 +55,28 @@ exports.checkout = async(req,res)=>{
     });
 }
 
+exports.checkinActivityByUserId= async(req, res)=>{
+    let body = req.body;
+    let end_time =  body.end_time ? body.end_time : new Date();
+    let start_time = body.start_time ? body.start_time : new Date("1900-12-12");
+
+    // console.log(end_time);
+    registryModel.find(
+        {   
+            user_id : body.user_id, 
+            checkin_time :{$gte : start_time},
+            checkout_time:{$lte : end_time}
+        }
+    )
+    .then(data=>{
+        res.send({registry:data});
+    }).catch(e=>{
+        console.log("Error fetching the user checkin Activity !");
+        console.log(e);
+        res.send(e.message);
+    })
+}
+
 exports.getRegistryByGymIdAndFlag = async(req,res)=>{
     let filter ={ gym_id : req.query.gym_id}
 
