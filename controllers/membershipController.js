@@ -46,7 +46,7 @@ exports.getById = async(req, res)=>{
         membershipModel.findById( req.query.id, {__v : 0})
         .then((doc)=>{
         //    console.log("membership found");
-           res.send({membership:doc});
+           res.send(doc);
         })
         .catch(error=>{
            console.log("error Occured fetching membership  with Id!!!");
@@ -77,8 +77,8 @@ exports.getAll = async(req,res)=>{
 
 exports.update = async(req, res)=>{
     let data = req.body;
-    if(ObjectId.isValid(data.id)){
-        membershipModel.findOneAndUpdate({_id:data.id}, {
+    if(ObjectId.isValid(data._id)){
+        membershipModel.findOneAndUpdate({_id:data._id}, {
             name : data.name,
             description : data.description ? data.description : null,
             price : data.price,

@@ -8,7 +8,7 @@ const classRoute = require("./classRoute");
 const classEnrollRoute = require("./classEnrollmentRoute");
 const registryRoute = require("./registryRoute");
 const activityLogRoute = require("./activityLogRoute");
-
+const auth = require("./Auth")
 const router = express.Router();
 
 
@@ -28,6 +28,7 @@ router.use("/class", classRoute);
 router.use("/class-enroll", classEnrollRoute);
 router.use("/registry", registryRoute);
 router.use("/log", activityLogRoute);
+router.use("/auth", auth);
 
 
 

@@ -21,6 +21,7 @@ exports.enrollClass = async(req, res)=>{
     let gymClass = await classModel.findById(class_id);
 
     if( !enrollment ||  enrollment.expiration_time < gymClass.start_time){
+        res.statusCode="401";
         res.send({error: " you must have and active membership during the Class timing to enroll."});
     }else{
         let newClassEnrollment = new classEnrollmentModel({
@@ -60,7 +61,7 @@ exports.getById = async(req, res)=>{
         classEnrollmentModel.findById( req.query.id, {__v : 0})
         .then((doc)=>{
         //    console.log("membership found");
-           res.send({classEnrollment:doc});
+           res.send({doc});
         })
         .catch(error=>{
            console.log("error Occured fetching Class enrollment with Id!!!");
@@ -83,7 +84,7 @@ exports.getById = async(req, res)=>{
 }
 
 exports.getAll = async(req,res)=>{
-    var data =  await classEnrollmentModel.find({},{"__v": 0});
+    var data =  await classEnrollmentModel.find({},{"__v": 0}).populate("class_id");
     // console.log(data);
     res.json(data);
     // res.send(200);
@@ -92,9 +93,9 @@ exports.getAll = async(req,res)=>{
 
 
 exports.deleteById = async(req, res)=>{
-     // console.log(req.query.id);
+    //   console.log(req.query.id);
      if(ObjectId.isValid(req.query.id)){
-        classEnrollmentModel.deleteOne( {_id : req.query.id}, {__v : 0})
+        classEnrollmentModel.deleteOne( {_id:req.query.id})
         .then((doc)=>{
             console.log(doc.deletedCount + " - class enrollment deleted using ID");
            res.sendStatus(200);
@@ -125,5 +126,57 @@ exports.deleteAll = async(req,res)=>{
         res.statusCode = 401;
         res.send({error : "You don't know the secret to delete all the class document !!!"});
     }
+    
+}
+
+exports.getUnEnrolledClasses = async(req,res)=>{
+     // console.log(req.query.id);
+     if(ObjectId.isValid(req.query.id)){
+        classEnrollmentModel.find( {user_id:req.query.id}).select("class_id -_id")
+        .then((enrolledClassId)=>{
+        let arr = [];
+        enrolledClassId.forEach(e=> arr.push(e.class_id));
+        // res.send(arr);
+
+           classModel.find({_id :{$nin: arr}})
+           .then((classes)=>{
+                res.send(classes);
+           }).catch(error=>{
+            console.log("error Occured fetching Class enrollment with Id!!!");
+            console.log(error.message);
+            res.sendStatus(500);
+            });
+        })
+        .catch(error=>{
+           console.log("error Occured fetching Class enrollment with Id!!!");
+           console.log(error.message);
+           res.sendStatus(500);
+        });
+    }else{
+        res.statusCode=400;
+        res.send({error:"Invalid user Object Id format"});
+    }
+     
+}
+
+exports.getEnrolledClasses = async(req,res)=>{
+    // console.log(req.query.id);
+    if(ObjectId.isValid(req.query.id)){
+       classEnrollmentModel.find( {user_id:req.query.id}).populate("class_id")
+       .then((enrolledClass)=>{
+       
+       res.send(enrolledClass);
+
+         
+       })
+       .catch(error=>{
+          console.log("error Occured fetching Class enrollment with Id!!!");
+          console.log(error.message);
+          res.sendStatus(500);
+       });
+   }else{
+       res.statusCode=400;
+       res.send({error:"Invalid user Object Id format"});
+   }
     
 }

@@ -5,6 +5,9 @@ const controller = require("../controllers/userController");
 router.get("/", controller.defaultFunction);
 router.get("/all", controller.getAll);
 router.get("/get", controller.getById); // query parameter - id
+router.get("/instructors", controller.getInstructors); 
+router.get("/members", controller.getMembers); 
+
 
 router.post("/create", controller.addUser);
 

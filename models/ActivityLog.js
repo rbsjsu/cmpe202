@@ -8,7 +8,7 @@ const log_activity = new mongoose.Schema({
     },
    activity_type : {
         type : String,
-        enum : ['Treadmill', 'Cycling', 'Weight Traning', 'stairs', 'Cardio'],
+        enum : ['Treadmill', 'Cycling', 'Weight Training', 'Stairs', 'Cardio'],
         default : "Treadmill" 
    },
     duration : {

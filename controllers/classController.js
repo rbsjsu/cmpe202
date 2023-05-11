@@ -44,10 +44,10 @@ exports.addClass = async(req, res)=>{
 exports.getById = async(req, res)=>{
     // console.log(req.query.id);
     if(ObjectId.isValid(req.query.id)){
-        classModel.findById( req.query.id, {__v : 0})
+        classModel.findById( req.query.id, {__v : 0}).populate("instructor_id").populate("gym_id")
         .then((doc)=>{
         //    console.log("membership found");
-           res.send({class:doc});
+           res.send(doc);
         })
         .catch(error=>{
            console.log("error Occured fetching Class with Id!!!");
@@ -69,8 +69,11 @@ exports.getById = async(req, res)=>{
     // res.sendStatus(200);
 }
 
+
+
+
 exports.getAll = async(req,res)=>{
-    var data =  await classModel.find({},{"__v": 0});
+    var data =  await classModel.find({},{"__v": 0}).populate("instructor_id").populate("gym_id");
     // console.log(data);
     res.json(data);
     // res.send(200);
@@ -87,10 +90,22 @@ exports.getAllUpcoming = async(req,res)=>{
     // res.send(200);
 }
 
+exports.getByGymId = async(req,res)=>{
+    var data =  await classModel.find({
+        start_time :{
+            $gte: new Date()
+        },
+        gym_id:req.query.id
+    },{"__v": 0});
+    // console.log(data);
+    res.json(data);
+    // res.send(200);
+}
+
 exports.update = async(req, res)=>{
     let data = req.body;
-    if(ObjectId.isValid(data.id)){
-        classModel.findOneAndUpdate({_id:data.id}, {
+    if(ObjectId.isValid(data._id)){
+        classModel.findOneAndUpdate({_id:data._id}, {
             instructor_id : data.instructor_id,
             gym_id : data.gym_id,
             name : data.name,

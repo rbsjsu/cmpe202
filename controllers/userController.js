@@ -10,6 +10,7 @@ exports.defaultFunction=async(req,res)=>{
 }
 
 exports.addUser = async(req, res)=>{
+    console.log("Post / user/create");
     const data = req.body;
     const newUser = new userModel({
         name : data.name,
@@ -47,7 +48,7 @@ exports.getById = async(req, res)=>{
         userModel.findById( req.query.id, {__v : 0})
         .then((doc)=>{
         //    console.log("membership found");
-           res.send({user:doc});
+           res.send(doc);
         })
         .catch(error=>{
            console.log("error Occured fetching User  with Id!!!");
@@ -69,6 +70,8 @@ exports.getById = async(req, res)=>{
     // res.sendStatus(200);
 }
 
+
+
 exports.getAll = async(req,res)=>{
     var data =  await userModel.find({},{"__v": 0});
     // console.log(data);
@@ -78,8 +81,8 @@ exports.getAll = async(req,res)=>{
 
 exports.update = async(req, res)=>{
     let data = req.body;
-    if(ObjectId.isValid(data.id)){
-        userModel.findOneAndUpdate({_id:data.id}, {
+    if(ObjectId.isValid(data._id)){
+        userModel.findOneAndUpdate({_id:data._id}, {
             name : data.name,
             address : data.address ? data.address : null,
             phone_no : data.phone_no,
@@ -101,7 +104,7 @@ exports.update = async(req, res)=>{
             console.log("error Occured while updating the User !!!");
             console.log(error.message);
             res.statusCode = 500;
-            res.send({error:error.message});
+            res.json({error:error.message});
         })
     }else{
         res.statusCode=400;
@@ -146,4 +149,41 @@ exports.deleteAll = async(req,res)=>{
     }
     
 }
- 
+exports.getMembers = async(req, res)=>{
+    // console.log(req.query.id);
+    
+        userModel.find( {role:"Member"}, {__v : 0})
+        .then((doc)=>{
+        //    console.log("membership found");
+           res.send(doc);
+        })
+        .catch(error=>{
+           console.log("error Occured fetching Members !!");
+           console.log(error.message);
+           res.sendStatus(500);
+        });
+   
+}
+
+exports.getInstructors = async(req, res)=>{
+    // console.log(req.query.id);
+    
+        userModel.find( {role:"Instructor"}, {__v : 0})
+        .then((doc)=>{
+        //    console.log("membership found");
+           res.send(doc);
+        })
+        .catch(error=>{
+           console.log("error Occured fetching Instructors !!");
+           console.log(error.message);
+           res.sendStatus(500);
+        });
+   
+    // if(membership){
+    //     res.send({membership});
+    // }else{
+    //     res.statusCode = 404;
+    //     res.send({error: "No record found with Id - " + req.query.id});
+    // }
+    // res.sendStatus(200);
+}

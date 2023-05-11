@@ -4,10 +4,12 @@ const mongoose = require('mongoose');
 
 const config = require('./config.json');
 const router = require('./routes/router');
+const cors = require('cors');
 
 const app = express();
 
 app.use(express.urlencoded({extended:true}));
+app.use(cors());
 app.use(express.json());
 app.use('/', router);
 

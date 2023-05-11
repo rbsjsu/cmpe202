@@ -5,7 +5,7 @@ const controller = require("../controllers/classController");
 router.get("/", controller.defaultFunction);
 router.get("/all", controller.getAll);
 router.get("/get", controller.getById); // query parameter - id
-
+router.get("/gym", controller.getByGymId);
 router.post("/create", controller.addClass);
 
 router.delete("/delete-all/:secret", controller.deleteAll);

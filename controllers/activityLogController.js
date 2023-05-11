@@ -1,5 +1,6 @@
 var counter = 0;
 const activityLogModel = require('../models/ActivityLog');
+const registryModel = require('../models/Registry');
 const config_secret = require("../config.json").db.secret;
 const ObjectId = require("mongoose").Types.ObjectId;
 
@@ -153,4 +154,32 @@ exports.deleteAll = async(req,res)=>{
         res.send({error : "You don't know the secret to delete all the activity document !!!"});
     }
     
+}
+
+
+exports.getByUserId = async(req, res)=>{
+    const user_id = req.query.id;
+    // const rData = [];
+    let aData = [];
+    try{
+        // rData = await registryModel.find({ user_id});
+        aData = await activityLogModel.find({ user_id});
+    }catch(e){
+        console.log("Error fetching the user Activity !");
+        console.log(e);
+        res.send(e.message);
+    }
+
+    // const data = [];
+    // aData.forEach(activity => {
+    //     data.push(activity);
+    // });
+
+    // rData.forEach(element =>{
+    //     element.activity_type='registry';
+    //     data.push(element);
+    // })
+
+    res.send(aData);
+
 }

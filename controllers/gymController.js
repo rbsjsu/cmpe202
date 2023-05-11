@@ -43,7 +43,7 @@ exports.getById = async(req, res)=>{
         gymModel.findById( req.query.id, {__v : 0})
         .then((doc)=>{
         //    console.log("membership found");
-           res.send({gym:doc});
+           res.send(doc);
         })
         .catch(error=>{
            console.log("error Occured fetching Gym  with Id!!!");
@@ -74,8 +74,8 @@ exports.getAll = async(req,res)=>{
 
 exports.update = async(req, res)=>{
     let data = req.body;
-    if(ObjectId.isValid(data.id)){
-        gymModel.findOneAndUpdate({_id:data.id}, {
+    if(ObjectId.isValid(data._id)){
+        gymModel.findOneAndUpdate({_id:data._id}, {
             location : data.location,
             description : data.description ? data.description : null
         }, {new : true}).then((doc)=>{
