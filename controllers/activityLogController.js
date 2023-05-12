@@ -183,3 +183,113 @@ exports.getByUserId = async(req, res)=>{
     res.send(aData);
 
 }
+
+exports.getHourSpent = async(req, res)=>{
+
+    const {start_time, end_time, user_id} = req.body;
+    // console.log(user_id);
+    let data = [];
+    try{
+         data= await activityLogModel.find({creation_time:{
+            $gte : start_time ? start_time : "1990-12-12",
+            $lte : end_time ? end_time : "2100-12-12"
+        }, user_id});
+    }catch(e){
+        res.statusCode=500;
+        res.send(e.message);
+    }
+   
+
+    let hrLable = []
+    for( let i=1; i<=31; i++){
+        hrLable.push(i.toString());
+    }
+    const fRes={};
+    fRes.dataByDay ={
+        labels:hrLable,
+        datasets: [{
+                label: 'Number of visitors by the hour (by day)',
+                data: byDaysCount(data),
+                fill: false,
+                borderColor: 'rgb(100,192,192)',
+                backgroundColor:"rgb(75, 192, 192)",
+                tension: 0.1,
+            }]
+    }
+    fRes.dataByWeekday ={
+        labels:['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        datasets: [{
+            label: 'Number of visitors by the Weekdays',
+            data: byWeekDayCount(data),
+            fill: false,
+            borderColor: 'rgb(100,192,192)',
+            backgroundColor:"rgb(75, 192, 192)",
+            tension: 0.1,
+        }]
+    }
+    fRes.dataByWeekend ={
+        labels:['Saturday', 'Sunday'],
+        datasets: [{
+            label: 'Number of visitors by the Weekends',
+            data: byWeekendCount(data),
+            fill: false,
+            borderColor: 'rgb(100,192,192)',
+            backgroundColor:"rgb(75, 192, 192)",
+            tension: 0.1,
+        }]
+    }
+         
+      
+    res.send(fRes);
+}
+
+function byDaysCount(data){
+    let ans = [];
+    for(let i=0; i<31; i++){
+        ans[i]=0;
+    }
+
+    data.forEach(ele=>{
+        let d = new Date(ele.creation_time);
+        ans[d.getDate()-1]+=ele.duration;
+    })
+
+    for(let i =0; i<31; i++){
+        ans[i]/=60;
+    }
+    return ans;
+}
+
+function byWeekendCount(data){
+    let ans = [0,0,0,0,0,0,0];
+   
+
+    data.forEach(ele=>{
+        let d = new Date(ele.creation_time);
+        ans[d.getDay()]+=ele.duration; 
+    })
+
+    for(let i =0; i<7; i++){
+        ans[i]/=60;
+    }
+    let result = [];
+    result[0]=ans[6];
+    result[1]=ans[0];
+    return result;
+}
+function byWeekDayCount(data){
+    let ans = [0,0,0,0,0,0,0];
+   
+
+    data.forEach(ele=>{
+        let d = new Date(ele.creation_time);
+        ans[d.getDay()]+=ele.duration; 
+    })
+
+    for(let i =0; i<7; i++){
+        ans[i]/=60;
+    }
+    return ans.slice(1,6);
+}
+
+

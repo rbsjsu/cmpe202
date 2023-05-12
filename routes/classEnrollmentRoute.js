@@ -11,7 +11,7 @@ router.get("/get/enrolled", controller.getEnrolledClasses); // query parameter -
 router.get("/get/unenrolled", controller.getUnEnrolledClasses);
 
 router.get("/all", controller.getAll);
-
+router.post("/stats", controller.getEnrollmentCount);
 
 
 router.delete("/delete-all/:secret", controller.deleteAll);

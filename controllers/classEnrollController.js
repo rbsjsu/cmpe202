@@ -47,12 +47,6 @@ exports.enrollClass = async(req, res)=>{
    }  
 
 }
-
-
-    
-    // here can access new record  via - >  newMembership
-    // res.statusCode =201;
-    // res.send({membership : newMembership});
 }
 
 exports.getById = async(req, res)=>{
@@ -73,14 +67,6 @@ exports.getById = async(req, res)=>{
         res.send({error:"Invalid Class enrollment Object Id format"});
     }
      
-    
-    // if(membership){
-    //     res.send({membership});
-    // }else{
-    //     res.statusCode = 404;
-    //     res.send({error: "No record found with Id - " + req.query.id});
-    // }
-    // res.sendStatus(200);
 }
 
 exports.getAll = async(req,res)=>{
@@ -180,3 +166,105 @@ exports.getEnrolledClasses = async(req,res)=>{
    }
     
 }
+
+
+exports.getEnrollmentCount= async(req, res)=>{
+    const {start_time, end_time} = req.body;
+
+    let data = [];
+    let classData = [];
+
+    try{
+        data= await classEnrollmentModel.find({creation_time:{
+            $gte : start_time ? start_time : "1990-12-12",
+            $lte : end_time ? end_time : "2100-12-12"
+        }});
+
+        // console.log(data);
+
+        classData = await classModel.find({start_time:{
+            $gte : start_time ? start_time : "1990-12-12",
+            $lte : end_time ? end_time : "2100-12-12"
+        }});
+
+    }catch(e){
+        res.statusCode=500;
+        res.send(e.message);
+    }
+   
+
+    let hrLable = []
+    for( let i=1; i<=31; i++){
+        hrLable.push(i.toString());
+    }
+    const fRes={};
+    fRes.dataByDay ={
+        labels:hrLable,
+        datasets: [{
+                label: 'Number of Class Enrollment by day',
+                data: byDaysCount(data),
+                fill: false,
+                borderColor: 'green',
+                backgroundColor:"rgb(192, 75, 75)",
+                tension: 0.1,
+            },{
+                label: 'Number of Class by day',
+                data: byDaysCount(classData),
+                fill: false,
+                borderColor: 'green',
+                backgroundColor:"rgb(75, 192, 192)",
+                tension: 0.1,
+            }]
+        }
+    fRes.dataByWeekDay = {
+            labels:['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            datasets: [{
+                label: 'Number of Class Enrollment by the Week',
+                data: byWeekCount(data),
+                fill: false,
+                borderColor: 'green',
+                backgroundColor:"rgb(192, 75, 75)",
+                tension: 0.1,
+            },{
+                label: 'Number of Class Enrollment by the Week',
+                data: byWeekCount(classData),
+                fill: false,
+                borderColor: 'green',
+                backgroundColor:"rgb(75, 192, 192)",
+                tension: 0.1,
+            }]
+        };
+         
+      
+    res.send(fRes);
+}
+
+function byDaysCount(data){
+    let ans = [];
+    for(let i=0; i<31; i++){
+        ans[i]=0;
+    }
+
+    data.forEach(ele=>{
+        let time = ele.start_time!=null?ele.start_time:ele.creation_time;
+        let d = new Date(time);
+        ans[d.getDate()-1]++;
+    })
+
+    return ans;
+}
+
+function byWeekCount(data){
+    let ans = [0,0,0,0,0,0,0];
+   
+    
+    data.forEach(ele=>{
+        let time = ele.start_time!=null?ele.start_time:ele.creation_time;
+        let d = new Date(time);
+        ans[d.getDay()]++; 
+    })
+
+   
+    return ans;
+}
+
